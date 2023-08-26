@@ -1,0 +1,23 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.App,
+.App * {
+  box-sizing: border-box;
+}
+
+.scroll-container {
+  height: 400px;
+  background-color: lightgrey;
+  overflow-y: scroll;
+}
+
+.block {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid black;
+}

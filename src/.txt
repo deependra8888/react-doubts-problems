@@ -1,0 +1,49 @@
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import "./styles.css";
+
+export default function App() {
+  const containerRef = useRef(null);
+  const [start, setStart] = useState(0);
+  const end = start + 20;
+
+  const blocks = [];
+  for (let i = start; i < end; i++) {
+    blocks.push(
+      <div key={"" + start + i} className="block">
+        {i}
+      </div>
+    );
+  }
+
+  useLayoutEffect(() => {
+    containerRef.current.scrollTop = 100;
+  }, []);
+
+  const handleScroll = (event) => {
+    const container = containerRef.current;
+
+    if (container.scrollTop >= 1100) {
+      container.scrollTop = 100;
+      requestAnimationFrame(() => {
+        setStart((prev) => prev + 10);
+      });
+    }
+
+    if (container.scrollTop === 0) {
+      container.scrollTop = 1000;
+      setStart((prev) => prev - 10);
+    }
+  };
+
+  return (
+    <div className="App">
+      <div
+        ref={containerRef}
+        onScroll={handleScroll}
+        className="scroll-container"
+      >
+        {blocks}
+      </div>
+    </div>
+  );
+}

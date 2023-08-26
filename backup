@@ -1,0 +1,69 @@
+import { useState, useRef, useEffect } from "react";
+import "./styles.css";
+
+const createItems = (start) => {
+  const items = [];
+  const end = start + 12;
+
+  for (let i = start; i < end; i++) {
+    items.push(i);
+  }
+
+  return items;
+};
+
+export default function App() {
+  const [items, setItems] = useState(createItems(1));
+  const containerRef = useRef(null);
+  const itemListRef = useRef(null);
+  const lastItemRef = useRef(null);
+
+  useEffect(() => {
+    const lastItem = lastItemRef.current;
+
+    // const { height: listHeight } = itemListRef.current.getBoundingClientRect();
+    // containerRef.current.scrollTop = listHeight / 2;
+
+    const observerCallback = (entries) => {
+      const lastItemEntry = entries[0];
+      if (!lastItemEntry.isIntersecting) return;
+
+      const { target } = lastItemEntry;
+      const nextItem = +target.id + 1;
+      setItems((prev) => [...prev, ...createItems(nextItem)]);
+    };
+
+    const observer = new IntersectionObserver(observerCallback);
+    if (lastItem) observer.observe(lastItem);
+
+    return () => observer.disconnect();
+  }, [items]);
+
+  const itemList = (
+    <div ref={itemListRef}>
+      {items.map((item, index) => {
+        if (index === items.length - 1) {
+          return (
+            <div key={item} id={item} ref={lastItemRef} className="block">
+              {item}
+            </div>
+          );
+        } else {
+          return (
+            <div key={item} className="block">
+              {item}
+            </div>
+          );
+        }
+      })}
+    </div>
+  );
+
+  return (
+    <div className="App">
+      <div ref={containerRef} className="scroll-container">
+        {itemList}
+      </div>
+    </div>
+  );
+}
